@@ -1,12 +1,13 @@
 #!/bin/bash
 
 COOKIES="/tmp/cookies.txt"
+API_PATH="${HTTP_S}://${QBITTORRENT_SERVER}:${QBITTORRENT_PORT}/api/v2"
 
 update_port () {
   PORT=$(cat $PORT_FORWARDED)
   rm -f $COOKIES
-  curl -s -c $COOKIES --data "username=$QBITTORRENT_USER&password=$QBITTORRENT_PASS" ${HTTP_S}://${QBITTORRENT_SERVER}:${QBITTORRENT_PORT}/api/v2/auth/login > /dev/null
-  curl -s -b $COOKIES --data 'json={"listen_port": "'"$PORT"'"}' ${HTTP_S}://${QBITTORRENT_SERVER}:${QBITTORRENT_PORT}/api/v2/app/setPreferences > /dev/null
+  curl -s -c $COOKIES --data "username=$QBITTORRENT_USER&password=$QBITTORRENT_PASS" "$API_PATH/auth/login" > /dev/null
+  curl -s -b $COOKIES --data 'json={"listen_port": "'"$PORT"'"}' "$API_PATH/app/setPreferences" > /dev/null
   rm -f $COOKIES
   echo "Successfully updated qbittorrent to port $PORT"
 }
